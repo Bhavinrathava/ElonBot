@@ -1,5 +1,7 @@
 import praw
 from praw.models import MoreComments
+import logging
+
 class SrScrapper:
     def __init__(self) -> None:
         pass
@@ -22,4 +24,22 @@ class SrScrapper:
                     matchingComments.append(comment)
 
         return matchingComments
+    
+    def replyToComments(self, redditInstance, processedComments):
+        POSITIVE_MESSAGE = "I Sense some respect in your comment! But, you're FIRED anyway. Adios!"
+        NEGATIVE_MESSAGE = "I Do not like the look of this comment. You are FIRED! "
+        commentIDs = list(processedComments.keys())
+        #{CID:[text, sentiment]}
+        
+        for commentid in commentIDs:
+            arr = processedComments[commentid]
+            if(arr[-1] == 'POSITIVE'):
+                repID = redditInstance.comment(commentid).reply(POSITIVE_MESSAGE)
+                logging.info("Found a Positive Sent. comment : Comment ID -> {} and replyID -> {}", commentid,repID)
+            else:
+                repID = redditInstance.comment(commentid).reply(NEGATIVE_MESSAGE)
+                logging.info("Found a Positive Sent. comment : Comment ID -> {} and replyID -> {}", commentid,repID)
+
+            
+
             

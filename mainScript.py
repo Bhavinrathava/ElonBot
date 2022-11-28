@@ -1,19 +1,23 @@
 from SentimentAnalysis import Analyser
 import praw
 from subredditScraper import SrScrapper
+import logging
 if __name__ == "__main__":
 
     reddit = praw.Reddit("elonbot", user_agent="ElonBot v1.0 developed by u/zeroDev_")
 
     scrapper = SrScrapper()
-    matchingComment = scrapper.findInSubreddit(reddit, "xqcow", "lil bro")
+    analyser = Analyser()
 
-    
-    map(function)
-    for comment in matchingComment:
-        text = comment.body 
+    matchingComment = scrapper.findInSubreddit(reddit, "test", "Elon")
 
-        result = Analyser.classifyOne(text)
-        if(result == 'POSITIVE'):
+    # {commentID : ["text", Positive / Negative, replyID]}
+    ds = {}
+    for i in matchingComment:
+        ds[i.id] = [i.body]
+    logging.info("Found {} comments mentioning Elon-san ! ", len(ds))
 
+    processedComments = analyser.classify(ds)
+
+    scrapper.replyToComments(reddit,processedComments)
 
