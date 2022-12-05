@@ -1,9 +1,13 @@
 from transformers import pipeline
 
+# Prefect imports
+from prefect import task, flow
+
 class Analyser:
     def __init__(self, pipelineName:str = "sentiment-analysis"):
         self.pipeline = pipeline(pipelineName)
 
+    @task
     def classify(self,data):
         # data = {id-> [text]}
         textList = [i[0] for i in data.values()]
@@ -14,7 +18,7 @@ class Analyser:
             data[keys[i]].append(results[i]['label'])
             
         return data 
-    
+    @task
     def classifyOne(self,data:str)->list:
 
         results = self.pipeline([data])
