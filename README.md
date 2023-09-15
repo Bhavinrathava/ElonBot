@@ -17,6 +17,6 @@ WHAT IT DOES
 - Reply to comments based on sentiment detected 
 - Monitor the progress and logs via Prefect Flows 
 
-![ALT text] ('/ReadmeSS/DBSS-1.png')
-![ALT text] ('/ReadmeSS/DBSS-2.png')
-![ALT text] ('/ReadmeSS/PrefectShot.png') 
+![Alt text] ('/ReadmeSS/DBSS-1.png')
+![Alt text] ('/ReadmeSS/DBSS-2.png')
+![Alt text] ('/ReadmeSS/PrefectShot.png') 
