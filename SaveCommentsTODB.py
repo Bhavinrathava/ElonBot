@@ -1,12 +1,11 @@
 import praw
-from Common.subredditScraper import SrScrapper
+from Common.subredditScraper import findInSubreddit
 import logging
-from Common.pymongoGetDb import MongoDBUtility
+from Common.pymongoGetDb import getCollection
 
 # Prefect imports
 from prefect import task, flow
 
-@task
 def assertDataTypes(datadict):
     keys = list(datadict.keys())
 
@@ -16,7 +15,7 @@ def assertDataTypes(datadict):
     
     return True
 
-@task
+
 def parseDownloadedComments(commentList):
     dataset = []
     for comment in commentList:
@@ -29,18 +28,17 @@ def parseDownloadedComments(commentList):
 
     
 
-@flow
+@task(name = "Saving Comments from Reddit for processing")
 def SaveCommentstoDB():
 
     reddit = praw.Reddit("elonbot", user_agent="ElonBot v1.0 developed by u/zeroDev_")
-    scrapper = SrScrapper()
-    matchingComment = scrapper.findInSubreddit(reddit, "memes", "elon")
+    matchingComment = findInSubreddit(reddit, "memes", "elon")
     rawData = parseDownloadedComments(matchingComment)
     logging.info("Ready to store {} new records", len(rawData))
-    dbhelper = MongoDBUtility()
-    collection = dbhelper.getCollection()
-    result = collection.insert_many(rawData)
-    logging.info(result)
+    collection = getCollection()
+    if len(rawData) > 0:
+        result = collection.insert_many(rawData)
+        logging.info(result)
 
 if __name__ == "__main__":
     SaveCommentstoDB()

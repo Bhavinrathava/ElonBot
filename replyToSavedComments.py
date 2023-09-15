@@ -1,28 +1,20 @@
 import praw 
-from Common.pymongoGetDb import MongoDBUtility
-from Common.subredditScraper import SrScrapper
+from Common.pymongoGetDb import getDB, getItemsReadOnly
+from Common.subredditScraper import sentimentBasedReplies
 
 # Prefect imports
-from prefect import task, flow
+from prefect import task
 
-@flow
+@task(name = "Replying to comments")
 def ReplyToComments():
-    mongoHelper = MongoDBUtility()
-
-
-    comments = mongoHelper.getItemsReadOnly("mainDB", "ParsedComments", True)
+    comments = getItemsReadOnly("mainDB", "ParsedComments", True) #[{id:ID, Sentiment: SENTIMENT}, ..]
     reddit = praw.Reddit("elonbot", user_agent="ElonBot v1.0 developed by u/zeroDev_")
-
-    scrapper = SrScrapper()
-
-    comments =  scrapper.sentimentBasedReplies(comments, reddit)
-    db = mongoHelper.getDB()
-
-    collection = db["ParsedComments"]
+    comments =  sentimentBasedReplies(comments, reddit)
+    collection = getDB()["ParsedComments"]
 
     for comment in comments:
-        if(comment['saved']):
-            collection.find_one_and_update({'id':comment['id']},{'$set':{'replyID':comment['replyID'].id, 'saved':True}})
+        if(comment['replied']):
+            collection.find_one_and_update({'commentID':comment['commentID']},{'$set':{'replyID':comment['replyID'], 'replied': True}})
 
 if __name__ == "__main__":
     ReplyToComments()

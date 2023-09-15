@@ -2,8 +2,8 @@ from datetime import timedelta
 
 import pendulum
 from prefect.deployments import DeploymentSpec
-from prefect.flow_runners import SubprocessFlowRunner
-from prefect.orion.schemas.schedules import IntervalSchedule
+from prefect.infrastructure import Process
+from prefect.server.schemas.schedules import IntervalSchedule
 
 schedule = IntervalSchedule(
     interval=timedelta(days=1),
@@ -16,6 +16,6 @@ DeploymentSpec(
     flow_location="./PrefectDev.py",
     flow_name="ElonBotFlow",
     schedule=schedule,
-    flow_runner=SubprocessFlowRunner(),
+    flow_runner=Process(),
     tags=["dev"],
 )

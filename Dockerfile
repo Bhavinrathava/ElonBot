@@ -1,8 +1,13 @@
-FROM apache/airflow:2.4.3
+# We're using the latest version of Prefect with Python 3.10
+FROM prefecthq/prefect:2-python3.10
 
-COPY requirement.txt /
-COPY --chown=airflow:root Airfloworganizer.py /opt/airflow/dags
-COPY --chown=airflow:root ./Scripts/ /opt/airflow/dags/Scripts
+# Add our requirements.txt file to the image and install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt --trusted-host pypi.python.org --no-cache-dir
 
-RUN pip3 install -r /requirement.txt
+# Add our flow code to the image
+WORKDIR /opt/prefect/flows/
+COPY . .
 
+# Run our flow script when the container starts
+CMD ["python", "PrefectDev.py"]

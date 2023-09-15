@@ -1,0 +1,6 @@
+prefect
+pymongo
+tensorflow
+praw
+transformers
+

@@ -4,7 +4,7 @@ from SaveCommentsTODB import SaveCommentstoDB
 from ParseSavedComments import parseCommentsFromDB
 from replyToSavedComments import ReplyToComments
 
-@flow
+@flow(name = "ElonBot")
 def ElonBotFlow():
     SaveCommentstoDB()
     parseCommentsFromDB()
